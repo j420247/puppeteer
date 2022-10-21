@@ -15,17 +15,19 @@
  */
 
 export {Protocol} from 'devtools-protocol';
-export * from 'puppeteer-core/internal/common/DeviceDescriptors.js';
+export * from 'puppeteer-core/internal/common/Device.js';
 export * from 'puppeteer-core/internal/common/Errors.js';
 export * from 'puppeteer-core/internal/common/PredefinedNetworkConditions.js';
+export * from 'puppeteer-core/internal/common/Puppeteer.js';
+export * from 'puppeteer-core/internal/node/BrowserFetcher.js';
+/**
+ * @deprecated Use the query handler API defined on {@link Puppeteer}
+ */
 export * from 'puppeteer-core/internal/common/QueryHandler.js';
-export {BrowserFetcher} from 'puppeteer-core/internal/node/BrowserFetcher.js';
 export {LaunchOptions} from 'puppeteer-core/internal/node/LaunchOptions.js';
 
 import {Product} from 'puppeteer-core';
-import {rootDirname} from 'puppeteer-core/internal/constants.js';
 import {PuppeteerNode} from 'puppeteer-core/internal/node/PuppeteerNode.js';
-import {getPackageDirectory} from 'puppeteer-core/internal/node/util.js';
 import {PUPPETEER_REVISIONS} from 'puppeteer-core/internal/revisions.js';
 
 const productName = (process.env['PUPPETEER_PRODUCT'] ||
@@ -45,7 +47,6 @@ switch (productName) {
  * @public
  */
 const puppeteer = new PuppeteerNode({
-  projectRoot: getPackageDirectory(rootDirname),
   preferredRevision,
   isPuppeteerCore: false,
   productName,
@@ -53,6 +54,7 @@ const puppeteer = new PuppeteerNode({
 
 export const {
   connect,
+  /** @deprecated Import {@link BrowserFetcher} directly and use the constructor. */
   createBrowserFetcher,
   defaultArgs,
   executablePath,

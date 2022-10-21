@@ -75,7 +75,6 @@ export interface PuppeteerLaunchOptions
  */
 export class PuppeteerNode extends Puppeteer {
   #launcher?: ProductLauncher;
-  #projectRoot?: string;
   #productName?: Product;
 
   /**
@@ -88,15 +87,12 @@ export class PuppeteerNode extends Puppeteer {
    */
   constructor(
     settings: {
-      projectRoot?: string;
       preferredRevision?: string;
       productName?: Product;
     } & CommonPuppeteerSettings
   ) {
-    const {projectRoot, preferredRevision, productName, ...commonSettings} =
-      settings;
+    const {preferredRevision, productName, ...commonSettings} = settings;
     super(commonSettings);
-    this.#projectRoot = projectRoot;
     this.#productName = productName;
     if (preferredRevision) {
       this._preferredRevision = preferredRevision;
@@ -203,7 +199,6 @@ export class PuppeteerNode extends Puppeteer {
       }
       this._changedProduct = false;
       this.#launcher = createLauncher(
-        this.#projectRoot,
         this._preferredRevision,
         this._isPuppeteerCore,
         this._productName
@@ -234,16 +229,13 @@ export class PuppeteerNode extends Puppeteer {
   }
 
   /**
+   * @deprecated Import {@link BrowserFetcher} directly and use the constructor.
+   *
    * @param options - Set of configurable options to specify the settings of the
    * BrowserFetcher.
    * @returns A new BrowserFetcher instance.
    */
   createBrowserFetcher(options: BrowserFetcherOptions): BrowserFetcher {
-    if (!this.#projectRoot) {
-      throw new Error(
-        '_projectRoot is undefined. Unable to create a BrowserFetcher.'
-      );
-    }
-    return new BrowserFetcher(this.#projectRoot, options);
+    return new BrowserFetcher(options);
   }
 }
