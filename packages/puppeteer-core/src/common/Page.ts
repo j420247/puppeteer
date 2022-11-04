@@ -16,7 +16,8 @@
 
 import {Protocol} from 'devtools-protocol';
 import type {Readable} from 'stream';
-import type {Browser, BrowserContext} from '../api/Browser.js';
+import type {Browser} from '../api/Browser.js';
+import type {BrowserContext} from '../api/BrowserContext.js';
 import {
   GeolocationOptions,
   MediaFeature,
@@ -2532,14 +2533,8 @@ export class CDPPage extends Page {
       targetId: this.#target._targetId,
     });
     let clip = options.clip ? processClip(options.clip) : undefined;
-    const captureBeyondViewport =
-      typeof options.captureBeyondViewport === 'boolean'
-        ? options.captureBeyondViewport
-        : true;
-    const fromSurface =
-      typeof options.fromSurface === 'boolean'
-        ? options.fromSurface
-        : undefined;
+    let captureBeyondViewport = options.captureBeyondViewport ?? true;
+    const fromSurface = options.fromSurface;
 
     if (options.fullPage) {
       const metrics = await this.#client.send('Page.getLayoutMetrics');
@@ -2547,7 +2542,7 @@ export class CDPPage extends Page {
       const {width, height} = metrics.cssContentSize || metrics.contentSize;
 
       // Overwrite clip for full page.
-      clip = {x: 0, y: 0, width, height, scale: 1};
+      clip = undefined;
 
       if (!captureBeyondViewport) {
         const {
@@ -2567,7 +2562,10 @@ export class CDPPage extends Page {
           screenOrientation,
         });
       }
+    } else if (!clip) {
+      captureBeyondViewport = false;
     }
+
     const shouldSetDefaultBackground =
       options.omitBackground && (format === 'png' || format === 'webp');
     if (shouldSetDefaultBackground) {
@@ -2577,12 +2575,10 @@ export class CDPPage extends Page {
     const result = await this.#client.send('Page.captureScreenshot', {
       format,
       quality: options.quality,
-      clip: clip
-        ? {
-            ...clip,
-            scale: clip.scale === undefined ? 1 : clip.scale,
-          }
-        : undefined,
+      clip: clip && {
+        ...clip,
+        scale: clip.scale ?? 1,
+      },
       captureBeyondViewport,
       fromSurface,
     });

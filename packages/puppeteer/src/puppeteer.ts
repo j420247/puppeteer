@@ -19,42 +19,28 @@ export * from 'puppeteer-core/internal/common/Device.js';
 export * from 'puppeteer-core/internal/common/Errors.js';
 export * from 'puppeteer-core/internal/common/PredefinedNetworkConditions.js';
 export * from 'puppeteer-core/internal/common/Puppeteer.js';
-export * from 'puppeteer-core/internal/node/BrowserFetcher.js';
 /**
  * @deprecated Use the query handler API defined on {@link Puppeteer}
  */
 export * from 'puppeteer-core/internal/common/QueryHandler.js';
+export * from 'puppeteer-core/internal/node/BrowserFetcher.js';
 export {LaunchOptions} from 'puppeteer-core/internal/node/LaunchOptions.js';
 
-import {Product} from 'puppeteer-core';
 import {PuppeteerNode} from 'puppeteer-core/internal/node/PuppeteerNode.js';
-import {PUPPETEER_REVISIONS} from 'puppeteer-core/internal/revisions.js';
+import {getConfiguration} from './getConfiguration.js';
 
-const productName = (process.env['PUPPETEER_PRODUCT'] ||
-  process.env['npm_config_puppeteer_product'] ||
-  process.env['npm_package_config_puppeteer_product']) as Product;
-
-let preferredRevision: string;
-switch (productName) {
-  case 'firefox':
-    preferredRevision = PUPPETEER_REVISIONS.firefox;
-    break;
-  default:
-    preferredRevision = PUPPETEER_REVISIONS.chromium;
-}
+const configuration = getConfiguration();
 
 /**
  * @public
  */
 const puppeteer = new PuppeteerNode({
-  preferredRevision,
   isPuppeteerCore: false,
-  productName,
+  configuration,
 });
 
 export const {
   connect,
-  /** @deprecated Import {@link BrowserFetcher} directly and use the constructor. */
   createBrowserFetcher,
   defaultArgs,
   executablePath,
