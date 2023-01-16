@@ -22,7 +22,8 @@ import {EventEmitter} from './EventEmitter.js';
 import {EVALUATION_SCRIPT_URL, ExecutionContext} from './ExecutionContext.js';
 import {Frame} from './Frame.js';
 import {FrameTree} from './FrameTree.js';
-import {IsolatedWorld, MAIN_WORLD, PUPPETEER_WORLD} from './IsolatedWorld.js';
+import {IsolatedWorld} from './IsolatedWorld.js';
+import {MAIN_WORLD, PUPPETEER_WORLD} from './IsolatedWorlds.js';
 import {NetworkManager} from './NetworkManager.js';
 import {Page} from '../api/Page.js';
 import {Target} from './Target.js';
@@ -67,6 +68,13 @@ export class FrameManager extends EventEmitter {
    */
   _frameTree = new FrameTree();
 
+  /**
+   * Set of frame IDs stored to indicate if a frame has received a
+   * frameNavigated event so that frame tree responses could be ignored as the
+   * frameNavigated event usually contains the latest information.
+   */
+  #frameNavigatedReceived = new Set<string>();
+
   get timeoutSettings(): TimeoutSettings {
     return this.#timeoutSettings;
   }
@@ -98,6 +106,7 @@ export class FrameManager extends EventEmitter {
       this.#onFrameAttached(session, event.frameId, event.parentFrameId);
     });
     session.on('Page.frameNavigated', event => {
+      this.#frameNavigatedReceived.add(event.frame.id);
       this.#onFrameNavigated(event.frame);
     });
     session.on('Page.navigatedWithinDocument', event => {
@@ -202,15 +211,6 @@ export class FrameManager extends EventEmitter {
     this.initialize(target._session());
   }
 
-  onDetachedFromTarget(target: Target): void {
-    const frame = this.frame(target._targetId);
-    if (frame && frame.isOOPFrame()) {
-      // When an OOP iframe is removed from the page, it
-      // will only get a Target.detachedFromTarget event.
-      this.#removeFramesRecursively(frame);
-    }
-  }
-
   #onLifecycleEvent(event: Protocol.Page.LifecycleEventEvent): void {
     const frame = this.frame(event.frameId);
     if (!frame) {
@@ -248,7 +248,12 @@ export class FrameManager extends EventEmitter {
         frameTree.frame.parentId
       );
     }
-    this.#onFrameNavigated(frameTree.frame);
+    if (!this.#frameNavigatedReceived.has(frameTree.frame.id)) {
+      this.#onFrameNavigated(frameTree.frame);
+    } else {
+      this.#frameNavigatedReceived.delete(frameTree.frame.id);
+    }
+
     if (!frameTree.childFrames) {
       return;
     }
@@ -383,8 +388,7 @@ export class FrameManager extends EventEmitter {
       if (frame._client() !== session) {
         return;
       }
-
-      if (contextPayload.auxData && !!contextPayload.auxData['isDefault']) {
+      if (contextPayload.auxData && contextPayload.auxData['isDefault']) {
         world = frame.worlds[MAIN_WORLD];
       } else if (
         contextPayload.name === UTILITY_WORLD_NAME &&

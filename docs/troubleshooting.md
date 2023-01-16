@@ -1,8 +1,11 @@
----
-sidebar_position: 4
----
-
 # Troubleshooting
+
+:::caution
+
+Chromium currently does not provide arm64 binaries for Linux. There are only binaries
+for [Mac ARM with experimental support from Puppeteer](https://pptr.dev/contributing#macos-arm-and-custom-executables).
+
+:::
 
 ## `Cannot find module 'puppeteer-core/internal/...'`
 
@@ -45,8 +48,8 @@ module.exports = {
 ```
 
 You will need to reinstall `puppeteer` in order for the configuration to take
-effect. See [Configuring
-Puppeteer](./guides/configuring-puppeteer) for more information.
+effect. See [Configuring Puppeteer](./guides/configuration) for more
+information.
 
 ## Chrome headless doesn't launch on Windows
 
@@ -79,7 +82,6 @@ missing. The common ones are provided below.
 ```
 ca-certificates
 fonts-liberation
-libappindicator3-1
 libasound2
 libatk-bridge2.0-0
 libatk1.0-0
@@ -279,6 +281,19 @@ script:
   - npm test
 ```
 
+## Running Puppeteer on WSL (Windows subsystem for Linux)
+
+See [this thread](https://github.com/puppeteer/puppeteer/issues/1837) with some tips specific to WSL. In a nutshell, you need to install missing dependencies by either:
+
+1. [Installing Chrome on WSL to install all dependencies](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps#install-google-chrome-for-linux)
+2. Installing required dependencies manually: `sudo apt install libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2`.
+
+:::caution
+
+The list of required dependencies might get outdated and depend on what you already have installed.
+
+:::
+
 ## Running Puppeteer on CircleCI
 
 Running Puppeteer smoothly on CircleCI requires the following steps:
@@ -418,8 +433,7 @@ RUN apk add --no-cache \
 ...
 
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # Puppeteer v13.5.0 works with Chromium 100.
 RUN yarn add puppeteer@13.5.0

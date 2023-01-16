@@ -7,10 +7,14 @@ sidebar_label: NodeFor
 #### Signature:
 
 ```typescript
-export declare type NodeFor<Selector extends string> =
-  Selector extends keyof HTMLElementTagNameMap
-    ? HTMLElementTagNameMap[Selector]
-    : Selector extends keyof SVGElementTagNameMap
-    ? SVGElementTagNameMap[Selector]
-    : Element;
+export type NodeFor<ComplexSelector extends string> =
+  TypeSelectorOfComplexSelector<ComplexSelector> extends infer TypeSelector
+    ? TypeSelector extends
+        | keyof HTMLElementTagNameMap
+        | keyof SVGElementTagNameMap
+      ? ElementFor<TypeSelector>
+      : Element
+    : never;
 ```
+
+**References:** [ElementFor](./puppeteer.elementfor.md)

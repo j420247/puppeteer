@@ -390,7 +390,7 @@ export interface PageEventObject {
  * This example creates a page, navigates it to a URL, and then saves a screenshot:
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -425,7 +425,7 @@ export interface PageEventObject {
  * @public
  */
 export class Page extends EventEmitter {
-  #handlerMap = new WeakMap<Handler, Handler>();
+  #handlerMap = new WeakMap<Handler<any>, Handler<any>>();
 
   /**
    * @internal
@@ -628,8 +628,6 @@ export class Page extends EventEmitter {
    * Once request interception is enabled, every request will stall unless it's
    * continued, responded or aborted; or completed using the browser cache.
    *
-   * Enabling request interception disables page caching.
-   *
    * See the
    * {@link https://pptr.dev/next/guides/request-interception|Request interception guide}
    * for more details.
@@ -638,7 +636,7 @@ export class Page extends EventEmitter {
    * An example of a naïve request interceptor that aborts all image requests:
    *
    * ```ts
-   * const puppeteer = require('puppeteer');
+   * import puppeteer from 'puppeteer';
    * (async () => {
    *   const browser = await puppeteer.launch();
    *   const page = await browser.newPage();
@@ -799,7 +797,7 @@ export class Page extends EventEmitter {
    * `page.evaluateHandle` is that `evaluateHandle` will return the value
    * wrapped in an in-page object.
    *
-   * If the function passed to `page.evaluteHandle` returns a Promise, the
+   * If the function passed to `page.evaluateHandle` returns a Promise, the
    * function will wait for the promise to resolve and return its value.
    *
    * You can pass a string instead of a function (although functions are
@@ -1163,8 +1161,8 @@ export class Page extends EventEmitter {
    * An example of adding an `md5` function into the page:
    *
    * ```ts
-   * const puppeteer = require('puppeteer');
-   * const crypto = require('crypto');
+   * import puppeteer from 'puppeteer';
+   * import crypto from 'crypto';
    *
    * (async () => {
    *   const browser = await puppeteer.launch();
@@ -1187,8 +1185,8 @@ export class Page extends EventEmitter {
    * An example of adding a `window.readfile` function into the page:
    *
    * ```ts
-   * const puppeteer = require('puppeteer');
-   * const fs = require('fs');
+   * import puppeteer from 'puppeteer';
+   * import fs from 'fs';
    *
    * (async () => {
    *   const browser = await puppeteer.launch();
@@ -1867,7 +1865,7 @@ export class Page extends EventEmitter {
    * @example
    *
    * ```ts
-   * const puppeteer = require('puppeteer');
+   * import puppeteer from 'puppeteer';
    *
    * (async () => {
    *   const browser = await puppeteer.launch();
@@ -1948,7 +1946,7 @@ export class Page extends EventEmitter {
    *
    * - `height`: page's height in pixels
    *
-   * - `deviceScalarFactor`: Specify device scale factor (can be though of as
+   * - `deviceScaleFactor`: Specify device scale factor (can be though of as
    *   dpr). Defaults to `1`.
    *
    * - `isMobile`: Whether the meta viewport tag is taken into account. Defaults
@@ -1967,7 +1965,7 @@ export class Page extends EventEmitter {
   /**
    * Evaluates a function in the page's context and returns the result.
    *
-   * If the function passed to `page.evaluteHandle` returns a Promise, the
+   * If the function passed to `page.evaluateHandle` returns a Promise, the
    * function will wait for the promise to resolve and return its value.
    *
    * @example
@@ -2373,7 +2371,7 @@ export class Page extends EventEmitter {
    * This method works across navigations:
    *
    * ```ts
-   * const puppeteer = require('puppeteer');
+   * import puppeteer from 'puppeteer';
    * (async () => {
    *   const browser = await puppeteer.launch();
    *   const page = await browser.newPage();
@@ -2400,9 +2398,9 @@ export class Page extends EventEmitter {
    * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
    * selector is not found in DOM.
    * @remarks
-   * The optional Parameter in Arguments `options` are :
+   * The optional Parameter in Arguments `options` are:
    *
-   * - `Visible`: A boolean wait for element to be present in DOM and to be
+   * - `visible`: A boolean wait for element to be present in DOM and to be
    *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
    *   properties. Defaults to `false`.
    *
@@ -2433,7 +2431,7 @@ export class Page extends EventEmitter {
    * This method works across navigation
    *
    * ```ts
-   * const puppeteer = require('puppeteer');
+   * import puppeteer from 'puppeteer';
    * (async () => {
    *   const browser = await puppeteer.launch();
    *   const page = await browser.newPage();
@@ -2493,7 +2491,7 @@ export class Page extends EventEmitter {
    * The {@link Page.waitForFunction} can be used to observe viewport size change:
    *
    * ```ts
-   * const puppeteer = require('puppeteer');
+   * import puppeteer from 'puppeteer';
    * (async () => {
    *   const browser = await puppeteer.launch();
    *   const page = await browser.newPage();

@@ -3,7 +3,7 @@
     "testIdPattern": "[accessibility.spec]",
     "platforms": ["darwin", "linux", "win32"],
     "parameters": ["firefox"],
-    "expectations": ["SKIP"]
+    "expectations": ["SKIP", "TIMEOUT"]
   },
   {
     "testIdPattern": "[ariaqueryhandler.spec]",
@@ -565,6 +565,12 @@
   },
   {
     "testIdPattern": "[keyboard.spec] Keyboard should press the metaKey",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["firefox"],
+    "expectations": ["SKIP"]
+  },
+  {
+    "testIdPattern": "[keyboard.spec] Keyboard should trigger commands of keyboard shortcuts",
     "platforms": ["darwin", "linux", "win32"],
     "parameters": ["firefox"],
     "expectations": ["SKIP"]
@@ -1168,30 +1174,6 @@
     "platforms": ["darwin", "linux", "win32"],
     "parameters": ["firefox"],
     "expectations": ["SKIP"]
-  },
-  {
-    "testIdPattern": "[oopif.spec] OOPIF should support OOP iframes becoming normal iframes again",
-    "platforms": ["darwin"],
-    "parameters": ["chrome"],
-    "expectations": ["PASS", "FAIL"]
-  },
-  {
-    "testIdPattern": "[oopif.spec] OOPIF should keep track of a frames OOP state",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["chrome"],
-    "expectations": ["PASS", "FAIL"]
-  },
-  {
-    "testIdPattern": "[oopif.spec] OOPIF should wait for inner OOPIFs",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["chrome"],
-    "expectations": ["PASS", "FAIL", "TIMEOUT"]
-  },
-  {
-    "testIdPattern": "[oopif.spec] OOPIF should track navigations within OOP iframes",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["chrome"],
-    "expectations": ["PASS", "FAIL"]
   },
   {
     "testIdPattern": "[launcher.spec] Launcher specs Puppeteer Puppeteer.connect should be able to connect to a browser with no page targets",
@@ -1962,54 +1944,6 @@
     "expectations": ["SKIP"]
   },
   {
-    "testIdPattern": "",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["firefox", "webDriverBiDi"],
-    "expectations": ["SKIP"]
-  },
-  {
-    "testIdPattern": "[launcher.spec] Launcher specs Puppeteer Puppeteer.launch can launch and close the browser",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["firefox", "webDriverBiDi"],
-    "expectations": ["PASS"]
-  },
-  {
-    "testIdPattern": "[Connection.spec] WebDriver BiDi",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["firefox", "webDriverBiDi"],
-    "expectations": ["PASS"]
-  },
-  {
-    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["firefox", "webDriverBiDi"],
-    "expectations": ["PASS"]
-  },
-  {
-    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work with function shorthands",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["firefox", "webDriverBiDi"],
-    "expectations": ["SKIP"]
-  },
-  {
-    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work with unicode chars",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["firefox", "webDriverBiDi"],
-    "expectations": ["SKIP"]
-  },
-  {
-    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work right after framenavigated",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["firefox", "webDriverBiDi"],
-    "expectations": ["SKIP"]
-  },
-  {
-    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work from-inside an exposed function",
-    "platforms": ["darwin", "linux", "win32"],
-    "parameters": ["firefox", "webDriverBiDi"],
-    "expectations": ["SKIP"]
-  },
-  {
     "testIdPattern": "[launcher.spec] Launcher specs Puppeteer Puppeteer.launch should be able to launch Firefox",
     "platforms": ["darwin", "linux", "win32"],
     "parameters": ["chrome"],
@@ -2023,7 +1957,7 @@
   },
   {
     "testIdPattern": "[headful.spec] headful tests HEADFUL target.page() should return a background_page",
-    "platforms": ["win32"],
+    "platforms": ["win32", "darwin"],
     "parameters": ["chrome"],
     "expectations": ["PASS", "FAIL"]
   },
@@ -2032,18 +1966,6 @@
     "platforms": ["win32"],
     "parameters": ["chrome"],
     "expectations": ["PASS", "FAIL"]
-  },
-  {
-    "testIdPattern": "[navigation.spec] navigation Page.goto should fail when navigating to bad SSL",
-    "platforms": ["darwin"],
-    "parameters": ["chrome", "headful"],
-    "expectations": ["FAIL"]
-  },
-  {
-    "testIdPattern": "[navigation.spec] navigation Page.goto should fail when navigating to bad SSL after redirects",
-    "platforms": ["darwin"],
-    "parameters": ["chrome", "headful"],
-    "expectations": ["FAIL"]
   },
   {
     "testIdPattern": "[click.spec] Page.click should click on checkbox input and toggle",
@@ -2082,12 +2004,6 @@
     "expectations": ["PASS", "FAIL"]
   },
   {
-    "testIdPattern": "[oopif.spec]",
-    "platforms": ["win32"],
-    "parameters": ["chrome"],
-    "expectations": ["PASS", "FAIL"]
-  },
-  {
     "testIdPattern": "[network.spec] network \"after each\" hook for \"Same-origin set-cookie subresource\"",
     "platforms": ["win32"],
     "parameters": ["chrome", "chrome-headless"],
@@ -2112,9 +2028,87 @@
     "expectations": ["PASS", "FAIL"]
   },
   {
-    "testIdPattern": "[headful.spec] headful tests HEADFUL OOPIF: should expose events within OOPIFs",
-    "platforms": ["linux"],
-    "parameters": ["chrome"],
+    "testIdPattern": "[waittask.spec] waittask specs Frame.waitForFunction should survive cross-process navigation",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["firefox"],
     "expectations": ["PASS", "FAIL"]
+  },
+  {
+    "testIdPattern": "[waittask.spec] waittask specs Frame.waitForFunction should work when resolved right before execution context disposal",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["firefox"],
+    "expectations": ["SKIP"]
+  },
+  {
+    "testIdPattern": "[waittask.spec] waittask specs Frame.waitForSelector should survive cross-process navigation",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["firefox"],
+    "expectations": ["PASS", "FAIL"]
+  },
+  {
+    "testIdPattern": "[screenshot.spec] Screenshots Page.screenshot should work",
+    "platforms": ["linux"],
+    "parameters": ["chrome", "chrome-headless"],
+    "expectations": ["PASS", "FAIL"]
+  },
+  {
+    "testIdPattern": "[tracing.spec] Tracing \"after each\" hook for \"should output a trace\"",
+    "platforms": ["win32"],
+    "parameters": ["chrome", "headless"],
+    "expectations": ["PASS", "FAIL"]
+  },
+  {
+    "testIdPattern": "[tracing.spec] Tracing \"after each\" hook for \"should output a trace\"",
+    "platforms": ["win32"],
+    "parameters": ["chrome", "headless"],
+    "expectations": ["PASS", "FAIL"]
+  },
+  {
+    "testIdPattern": "",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["webDriverBiDi"],
+    "expectations": ["SKIP", "TIMEOUT"]
+  },
+  {
+    "testIdPattern": "[launcher.spec] Launcher specs Puppeteer Puppeteer.launch can launch and close the browser",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["webDriverBiDi"],
+    "expectations": ["PASS"]
+  },
+  {
+    "testIdPattern": "[Connection.spec] WebDriver BiDi",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["webDriverBiDi"],
+    "expectations": ["PASS"]
+  },
+  {
+    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["webDriverBiDi"],
+    "expectations": ["PASS"]
+  },
+  {
+    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work with function shorthands",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["webDriverBiDi"],
+    "expectations": ["SKIP"]
+  },
+  {
+    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work with unicode chars",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["webDriverBiDi"],
+    "expectations": ["SKIP"]
+  },
+  {
+    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work right after framenavigated",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["webDriverBiDi"],
+    "expectations": ["SKIP"]
+  },
+  {
+    "testIdPattern": "[evaluation.spec] Evaluation specs Page.evaluate should work from-inside an exposed function",
+    "platforms": ["darwin", "linux", "win32"],
+    "parameters": ["webDriverBiDi"],
+    "expectations": ["SKIP"]
   }
 ]

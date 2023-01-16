@@ -6,12 +6,14 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        ### Thanks for taking the time to fill out this bug report!
+        **Before filling out this report**, please check our [Troubleshooting](https://pptr.dev/troubleshooting) guide for solutions to common issues.
+        Also, verify the problem is *related to packages maintained by Puppeteer* (this does not include `puppeteer-extra`, `expect-puppeteer`, etc.).
   - type: textarea
     id: summary
     attributes:
       label: Bug description
-      description: What did you do? What did you expect to happen? What actually happened instead?
+      description: What did you do? What did you expect to happen? What actually happened instead? Provide a [minimal reproducible example](https://stackoverflow.com/help/minimal-reproducible-example).
       value: |
         Steps to reproduce the problem:
 
@@ -51,8 +53,18 @@ body:
     validations:
       required: true
   - type: textarea
+    id: config
+    attributes:
+      label: Configuration file
+      description: |
+        Please copy and paste your configuration file [[Docs](https://pptr.dev/guides/configuration/)]. 
+        *No need for backticks — this automatically gets formatted into code.*
+      render: JavaScript
+  - type: textarea
     id: logs
     attributes:
       label: Relevant log output
-      description: Please copy and paste any relevant log output. No need for backticks — this automatically gets formatted into code.
-      render: shell
+      description: |
+        Please copy and paste any relevant log output. 
+        *No need for backticks — this automatically gets formatted into code.*
+      render: Shell

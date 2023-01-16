@@ -2,9 +2,10 @@ import {accessSync} from 'fs';
 import {mkdtemp} from 'fs/promises';
 import os from 'os';
 import path from 'path';
-import {CDPBrowser} from '../common/Browser.js';
+import {Browser} from '../api/Browser.js';
 import {assert} from '../util/assert.js';
 import {BrowserRunner} from './BrowserRunner.js';
+import {CDPBrowser} from '../common/Browser.js';
 import {
   BrowserLaunchArgumentOptions,
   ChromeReleaseChannel,
@@ -23,7 +24,7 @@ export class ChromeLauncher extends ProductLauncher {
 
   override async launch(
     options: PuppeteerNodeLaunchOptions = {}
-  ): Promise<CDPBrowser> {
+  ): Promise<Browser> {
     const {
       ignoreDefaultArgs = false,
       args = [],
@@ -41,6 +42,7 @@ export class ChromeLauncher extends ProductLauncher {
       timeout = 30000,
       waitForInitialPage = true,
       debuggingPort,
+      protocol,
     } = options;
 
     const chromeArguments = [];
@@ -124,6 +126,24 @@ export class ChromeLauncher extends ProductLauncher {
         slowMo,
         preferredRevision: this.puppeteer.browserRevision,
       });
+
+      if (protocol === 'webDriverBiDi') {
+        try {
+          const BiDi = await import('../common/bidi/bidi.js');
+          const bidiConnection = await BiDi.connectBidiOverCDP(connection);
+          browser = await BiDi.Browser.create({
+            connection: bidiConnection,
+            closeCallback: runner.close.bind(runner),
+            process: runner.proc,
+          });
+        } catch (error) {
+          runner.kill();
+          throw error;
+        }
+
+        return browser;
+      }
+
       browser = await CDPBrowser._create(
         this.product,
         connection,
@@ -157,38 +177,38 @@ export class ChromeLauncher extends ProductLauncher {
   }
 
   override defaultArgs(options: BrowserLaunchArgumentOptions = {}): string[] {
+    // See https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
     const chromeArguments = [
       '--allow-pre-commit-input',
       '--disable-background-networking',
-      '--enable-features=NetworkServiceInProcess2',
       '--disable-background-timer-throttling',
       '--disable-backgrounding-occluded-windows',
       '--disable-breakpad',
       '--disable-client-side-phishing-detection',
       '--disable-component-extensions-with-background-pages',
+      '--disable-component-update',
       '--disable-default-apps',
       '--disable-dev-shm-usage',
       '--disable-extensions',
-      // TODO: remove AvoidUnnecessaryBeforeUnloadCheckSync below
-      // once crbug.com/1324138 is fixed and released.
       // AcceptCHFrame disabled because of crbug.com/1348106.
-      '--disable-features=Translate,BackForwardCache,AcceptCHFrame,AvoidUnnecessaryBeforeUnloadCheckSync',
+      '--disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints',
       '--disable-hang-monitor',
       '--disable-ipc-flooding-protection',
       '--disable-popup-blocking',
       '--disable-prompt-on-repost',
       '--disable-renderer-backgrounding',
       '--disable-sync',
+      '--enable-automation',
+      // TODO(sadym): remove '--enable-blink-features=IdleDetection' once
+      // IdleDetection is turned on by default.
+      '--enable-blink-features=IdleDetection',
+      '--enable-features=NetworkServiceInProcess2',
+      '--export-tagged-pdf',
       '--force-color-profile=srgb',
       '--metrics-recording-only',
       '--no-first-run',
-      '--enable-automation',
       '--password-store=basic',
       '--use-mock-keychain',
-      // TODO(sadym): remove '--enable-blink-features=IdleDetection'
-      // once IdleDetection is turned on by default.
-      '--enable-blink-features=IdleDetection',
-      '--export-tagged-pdf',
     ];
     const {
       devtools = false,
@@ -204,7 +224,7 @@ export class ChromeLauncher extends ProductLauncher {
     }
     if (headless) {
       chromeArguments.push(
-        headless === 'chrome' ? '--headless=chrome' : '--headless',
+        headless === 'new' ? '--headless=new' : '--headless',
         '--hide-scrollbars',
         '--mute-audio'
       );

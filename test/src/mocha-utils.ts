@@ -32,6 +32,10 @@ import puppeteer from 'puppeteer/lib/cjs/puppeteer/puppeteer.js';
 import {TestServer} from '@pptr/testserver';
 import {extendExpectWithToBeGolden} from './utils.js';
 import * as Mocha from 'mocha';
+import {
+  setLogCapture,
+  getCapturedLogs,
+} from 'puppeteer-core/internal/common/Debug.js';
 
 const setupServer = async () => {
   const assetsPath = path.join(__dirname, '../assets');
@@ -65,8 +69,11 @@ const product =
 
 const alternativeInstall = process.env['PUPPETEER_ALT_INSTALL'] || false;
 
-const headless = (process.env['HEADLESS'] || 'true').trim().toLowerCase();
-const isHeadless = headless === 'true' || headless === 'chrome';
+const headless = (process.env['HEADLESS'] || 'true').trim().toLowerCase() as
+  | 'true'
+  | 'false'
+  | 'new';
+const isHeadless = headless === 'true' || headless === 'new';
 const isFirefox = product === 'firefox';
 const isChrome = product === 'chrome';
 const protocol = process.env['PUPPETEER_PROTOCOL'] || 'cdp';
@@ -88,7 +95,7 @@ const defaultBrowserOptions = Object.assign(
   {
     handleSIGINT: true,
     executablePath: process.env['BINARY'],
-    headless: headless === 'chrome' ? ('chrome' as const) : isHeadless,
+    headless: headless === 'new' ? ('new' as const) : isHeadless,
     dumpio: !!process.env['DUMPIO'],
     protocol: protocol as 'cdp' | 'webDriverBiDi',
   },
@@ -143,7 +150,7 @@ interface PuppeteerTestState {
   isFirefox: boolean;
   isChrome: boolean;
   isHeadless: boolean;
-  headless: string;
+  headless: 'true' | 'false' | 'new';
   puppeteerPath: string;
 }
 const state: Partial<PuppeteerTestState> = {};
@@ -172,8 +179,8 @@ if (
   }
   -> mode: ${
     isHeadless
-      ? headless === 'chrome'
-        ? '--headless=chrome'
+      ? headless === 'new'
+        ? '--headless=new'
         : '--headless'
       : 'headful'
   }`
@@ -273,6 +280,34 @@ export const expectCookieEquals = (
   for (let i = 0; i < cookies.length; i++) {
     expect(cookies[i]).toMatchObject(expectedCookies[i]!);
   }
+};
+
+/**
+ * Use it if you want to capture debug logs for a specitic test suite in CI.
+ * This describe function enables capturing of debug logs and would print them
+ * only if a test fails to reduce the amount of output.
+ */
+export const describeWithDebugLogs = (
+  description: string,
+  body: (this: Mocha.Suite) => void
+): Mocha.Suite | void => {
+  describe(description + '-debug', () => {
+    beforeEach(() => {
+      setLogCapture(true);
+    });
+
+    afterEach(function () {
+      if (this.currentTest?.state === 'failed') {
+        console.log(
+          `\n"${this.currentTest.fullTitle()}" failed. Here is a debug log:`
+        );
+        console.log(getCapturedLogs().join('\n') + '\n');
+      }
+      setLogCapture(false);
+    });
+
+    describe(description, body);
+  });
 };
 
 export const shortWaitForArrayToHaveAtLeastNElements = async (

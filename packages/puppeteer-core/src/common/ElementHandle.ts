@@ -31,7 +31,7 @@ import {
 } from './JSHandle.js';
 import {Page, ScreenshotOptions} from '../api/Page.js';
 import {getQueryHandlerAndSelector} from './QueryHandler.js';
-import {EvaluateFunc, HandleFor, NodeFor} from './types.js';
+import {ElementFor, EvaluateFunc, HandleFor, NodeFor} from './types.js';
 import {KeyInput} from './USKeyboardLayout.js';
 import {debugError, isString} from './util.js';
 import {CDPPage} from './Page.js';
@@ -53,7 +53,7 @@ const applyOffsetsToQuad = (
  * ElementHandles can be created with the {@link Page.$} method.
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -237,8 +237,8 @@ export class ElementHandle<
     Selector extends string,
     Params extends unknown[],
     Func extends EvaluateFunc<
-      [Array<NodeFor<Selector>>, ...Params]
-    > = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>
+      [HandleFor<Array<NodeFor<Selector>>>, ...Params]
+    > = EvaluateFunc<[HandleFor<Array<NodeFor<Selector>>>, ...Params]>
   >(
     selector: Selector,
     pageFunction: Func | string,
@@ -254,9 +254,9 @@ export class ElementHandle<
       this,
       updatedSelector
     )) as Array<HandleFor<NodeFor<Selector>>>;
-    const elements = await this.evaluateHandle((_, ...elements) => {
+    const elements = (await this.evaluateHandle((_, ...elements) => {
       return elements;
-    }, ...handles);
+    }, ...handles)) as JSHandle<Array<NodeFor<Selector>>>;
     const [result] = await Promise.all([
       elements.evaluate(pageFunction, ...args),
       ...handles.map(handle => {
@@ -296,7 +296,7 @@ export class ElementHandle<
    * @example
    *
    * ```ts
-   * const puppeteer = require('puppeteer');
+   * import puppeteer from 'puppeteer';
    *
    * (async () => {
    *   const browser = await puppeteer.launch();
@@ -356,7 +356,7 @@ export class ElementHandle<
    * This method works across navigation.
    *
    * ```ts
-   * const puppeteer = require('puppeteer');
+   * import puppeteer from 'puppeteer';
    * (async () => {
    *   const browser = await puppeteer.launch();
    *   const page = await browser.newPage();
@@ -410,6 +410,37 @@ export class ElementHandle<
       xpath = `.${xpath}`;
     }
     return this.waitForSelector(`xpath/${xpath}`, options);
+  }
+
+  /**
+   * Converts the current handle to the given element type.
+   *
+   * @example
+   *
+   * ```ts
+   * const element: ElementHandle<Element> = await page.$(
+   *   '.class-name-of-anchor'
+   * );
+   * // DO NOT DISPOSE `element`, this will be always be the same handle.
+   * const anchor: ElementHandle<HTMLAnchorElement> = await element.toElement(
+   *   'a'
+   * );
+   * ```
+   *
+   * @param tagName - The tag name of the desired element type.
+   * @throws An error if the handle does not match. **The handle will not be
+   * automatically disposed.**
+   */
+  async toElement<
+    K extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap
+  >(tagName: K): Promise<HandleFor<ElementFor<K>>> {
+    const isMatchingTagName = await this.evaluate((node, tagName) => {
+      return node.nodeName === tagName.toUpperCase();
+    }, tagName);
+    if (!isMatchingTagName) {
+      throw new Error(`Element is not a(n) \`${tagName}\` element`);
+    }
+    return this as unknown as HandleFor<ElementFor<K>>;
   }
 
   override asElement(): ElementHandle<ElementType> | null {

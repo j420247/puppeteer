@@ -46,7 +46,7 @@ jobs:
       needs_deploying: ${{ steps.needs_deploying.outputs.value }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
         with:
           fetch-depth: 2
       - name: Set up Node.js
@@ -77,7 +77,7 @@ jobs:
           else
             needs_deploying=false
           fi
-          echo "::set-output name=value::$needs_deploying"
+          echo "value=$needs_deploying" >> $GITHUB_OUTPUT
 
   deploy-docs:
     needs: check-docs
@@ -109,6 +109,14 @@ jobs:
           publish_dir: ./website/build
           user_name: release-please[bot]
           user_email: 55107282+release-please[bot]@users.noreply.github.com
+      - name: Trigger Algolia reindexing
+        env:
+          CRAWLER_USER_ID: ${{secrets.ALGOLIA_CRAWLER_USER_ID}}
+          CRAWLER_API_KEY: ${{secrets.ALGOLIA_CRAWLER_API_KEY}}
+          CRAWLER_ID: ${{secrets.ALGOLIA_CRAWLER_ID}}
+        run: |
+          curl -H "Content-Type: application/json" -X POST --user "$CRAWLER_USER_ID:$CRAWLER_API_KEY" \
+            "https://crawler.algolia.com/api/1/crawlers/$CRAWLER_ID/reindex"
 
   chrome-tests:
     name: ${{ matrix.suite }} tests on ${{ matrix.os }}
@@ -124,6 +132,10 @@ jobs:
           - chrome-headless
           - chrome-headful
           - chrome-new-headless
+          - chrome-bidi
+        exclude:
+          - os: windows-latest
+            suite: chrome-bidi
     steps:
       - name: Check out repository
         uses: actions/checkout@v3.0.2
@@ -204,6 +216,7 @@ jobs:
   installation-test-build:
     name: Build installation test
     runs-on: ubuntu-latest
+    if: "!startsWith(github.ref_name, 'release-please')"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -241,7 +254,6 @@ jobs:
           - 18
         pkg_manager:
           - npm
-          - yarn
     steps:
       - name: Download installation test
         uses: actions/download-artifact@v3
@@ -254,6 +266,11 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Set up ${{ matrix.pkg_manager }}
+        id: workaround
+        if: ${{ matrix.node == '14' && matrix.os == 'windows-latest' && matrix.pkg_manager == 'npm' }}
+        run: npm install -g ${{ matrix.pkg_manager }}@8.3
+      - name: Set up ${{ matrix.pkg_manager }}
+        if: ${{ steps.workaround.outcome == 'skipped' }}
         run: npm install -g ${{ matrix.pkg_manager }}@latest
       - name: Install dependencies
         run: ${{ matrix.pkg_manager }} install
@@ -289,3 +306,19 @@ jobs:
         working-directory: ./docker
         run: |
           docker run -i --init --cap-add=SYS_ADMIN --rm puppeteer-test-image node -e "`cat test/smoke-test.js`"
+
+  ng-schematics-tests:
+    name: Test Angular Schematics
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3.5.1
+        with:
+          cache: npm
+          node-version: latest
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Run tests
+        run: npm run test --workspace @puppeteer/ng-schematics

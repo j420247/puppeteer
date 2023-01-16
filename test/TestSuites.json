@@ -35,6 +35,12 @@
       "platforms": ["linux"],
       "parameters": ["firefox", "headless", "webDriverBiDi"],
       "expectedLineCoverage": 56
+    },
+    {
+      "id": "chrome-bidi",
+      "platforms": ["linux"],
+      "parameters": ["chrome", "headless", "webDriverBiDi"],
+      "expectedLineCoverage": 56
     }
   ],
   "parameterDefinitons": {
@@ -51,7 +57,7 @@
       "HEADLESS": "false"
     },
     "chrome-headless": {
-      "HEADLESS": "chrome"
+      "HEADLESS": "new"
     },
     "webDriverBiDi": {
       "PUPPETEER_PROTOCOL": "webDriverBiDi"

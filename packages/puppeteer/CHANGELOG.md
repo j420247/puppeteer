@@ -2,6 +2,78 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [19.4.1](https://github.com/puppeteer/puppeteer/compare/puppeteer-v19.4.0...puppeteer-v19.4.1) (2022-12-16)
+
+
+### Miscellaneous Chores
+
+* **puppeteer:** Synchronize puppeteer versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * puppeteer-core bumped from 19.4.0 to 19.4.1
+
+## [19.4.0](https://github.com/puppeteer/puppeteer/compare/puppeteer-v19.3.0...puppeteer-v19.4.0) (2022-12-07)
+
+
+### Features
+
+* **chromium:** roll to Chromium 109.0.5412.0 (r1069273) ([#9364](https://github.com/puppeteer/puppeteer/issues/9364)) ([1875da6](https://github.com/puppeteer/puppeteer/commit/1875da61916df1fbcf98047858c01075bd9af189)), closes [#9233](https://github.com/puppeteer/puppeteer/issues/9233)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * puppeteer-core bumped from 19.3.0 to 19.4.0
+
+## [19.3.0](https://github.com/puppeteer/puppeteer/compare/puppeteer-v19.2.2...puppeteer-v19.3.0) (2022-11-23)
+
+
+### Miscellaneous Chores
+
+* **puppeteer:** Synchronize puppeteer versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * puppeteer-core bumped from 19.2.2 to 19.3.0
+
+## [19.2.2](https://github.com/puppeteer/puppeteer/compare/v19.2.1...v19.2.2) (2022-11-03)
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * puppeteer-core bumped from 19.2.1 to ^19.2.2
+
+## [19.2.1](https://github.com/puppeteer/puppeteer/compare/v19.2.0...v19.2.1) (2022-10-28)
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * puppeteer-core bumped from 19.2.0 to ^19.2.1
+
+## [19.2.0](https://github.com/puppeteer/puppeteer/compare/v19.1.2...v19.2.0) (2022-10-26)
+
+
+### Features
+
+* **chromium:** roll to Chromium 108.0.5351.0 (r1056772) ([#9153](https://github.com/puppeteer/puppeteer/issues/9153)) ([e78a4e8](https://github.com/puppeteer/puppeteer/commit/e78a4e89c22bb1180e72d180c16b39673ff9125e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * puppeteer-core bumped from 19.1.1 to ^19.2.0
+
 ## [19.1.2](https://github.com/puppeteer/puppeteer/compare/v19.1.1...v19.1.2) (2022-10-25)
 
 
