@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [19.5.0](https://github.com/j420247/puppeteer/compare/puppeteer-core-v19.4.1...puppeteer-core-v19.5.0) (2023-01-16)
+
+
+### Features
+
+* ability to send headers via ws connection to browser in node.js environment ([#9314](https://github.com/j420247/puppeteer/issues/9314)) ([937fffa](https://github.com/j420247/puppeteer/commit/937fffaedc340ea12d5f6636d3ba6598cb22e397)), closes [#7218](https://github.com/j420247/puppeteer/issues/7218)
+* add element validation ([#9352](https://github.com/j420247/puppeteer/issues/9352)) ([c7a063a](https://github.com/j420247/puppeteer/commit/c7a063a15274856184356e15f2ae4be41191d309))
+* **chromium:** roll to Chromium 109.0.5412.0 (r1069273) ([#9364](https://github.com/j420247/puppeteer/issues/9364)) ([1875da6](https://github.com/j420247/puppeteer/commit/1875da61916df1fbcf98047858c01075bd9af189)), closes [#9233](https://github.com/j420247/puppeteer/issues/9233)
+* **puppeteer-core:** Infer element type from complex selector ([#9253](https://github.com/j420247/puppeteer/issues/9253)) ([bef1061](https://github.com/j420247/puppeteer/commit/bef1061c064e5135d86a48fffd7278f3e7f4a29e))
+* **puppeteer-core:** keydown supports commands ([#9357](https://github.com/j420247/puppeteer/issues/9357)) ([b7ebc5d](https://github.com/j420247/puppeteer/commit/b7ebc5d9bb9b9940ffdf470e51d007f709587d40))
+* **puppeteer-core:** update Chrome launcher flags ([#9239](https://github.com/j420247/puppeteer/issues/9239)) ([ae87bfc](https://github.com/j420247/puppeteer/commit/ae87bfc2b4361556e3660a1de2c6db348ce663ae))
+
+
+### Bug Fixes
+
+* improve a11y snapshot handling if the tree is not correct ([#9405](https://github.com/j420247/puppeteer/issues/9405)) ([02fe501](https://github.com/j420247/puppeteer/commit/02fe50194e60bd14c3a82539473a0313ab88c766)), closes [#9404](https://github.com/j420247/puppeteer/issues/9404)
+* **puppeteer-core:** avoid type instantiation errors ([#9370](https://github.com/j420247/puppeteer/issues/9370)) ([17f31a9](https://github.com/j420247/puppeteer/commit/17f31a9ee408ca5a08fe6dbceb8915e710156bd3)), closes [#9369](https://github.com/j420247/puppeteer/issues/9369)
+* **puppeteer-core:** target interceptor is not async ([#9430](https://github.com/j420247/puppeteer/issues/9430)) ([e3e9cc6](https://github.com/j420247/puppeteer/commit/e3e9cc622ac32f2067b6e74b5e8706c63169a157))
+* remove boundary conditions for visibility ([#9249](https://github.com/j420247/puppeteer/issues/9249)) ([e003513](https://github.com/j420247/puppeteer/commit/e003513c0c049aad38e374a16dc96c3e54ab0de5))
+* remove oopif expectations and fix oopif flakiness ([#9375](https://github.com/j420247/puppeteer/issues/9375)) ([810e0cd](https://github.com/j420247/puppeteer/commit/810e0cd74ecef353cfa43746c18bd5f580a3233d))
+
 ## [19.4.1](https://github.com/puppeteer/puppeteer/compare/puppeteer-core-v19.4.0...puppeteer-core-v19.4.1) (2022-12-16)
 
 

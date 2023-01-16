@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [19.5.0](https://github.com/j420247/puppeteer/compare/puppeteer-v19.4.1...puppeteer-v19.5.0) (2023-01-16)
+
+
+### Features
+
+* **chromium:** roll to Chromium 109.0.5412.0 (r1069273) ([#9364](https://github.com/j420247/puppeteer/issues/9364)) ([1875da6](https://github.com/j420247/puppeteer/commit/1875da61916df1fbcf98047858c01075bd9af189)), closes [#9233](https://github.com/j420247/puppeteer/issues/9233)
+* Default to not downloading if explicit browser path is set ([#9440](https://github.com/j420247/puppeteer/issues/9440)) ([d2536d7](https://github.com/j420247/puppeteer/commit/d2536d7cf5fa731250bbfd0d18959cacc8afffac)), closes [#9419](https://github.com/j420247/puppeteer/issues/9419)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * puppeteer-core bumped from 19.4.1 to 19.5.0
+
 ## [19.4.1](https://github.com/puppeteer/puppeteer/compare/puppeteer-v19.4.0...puppeteer-v19.4.1) (2022-12-16)
 
 
